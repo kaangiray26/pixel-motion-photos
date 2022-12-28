@@ -1,3 +1,6 @@
-# template
+# Pixel Motion Photos
+Convert Motion Photos on the web
 
-This template should help get you started developing with Vue 3 in Vite.
+* Convert photos and display them
+* Bulk convert
+* Download all videos as a single .zip file
