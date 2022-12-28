@@ -1,0 +1,35 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css");
+
+html {
+    margin: 0;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+    background-color: var(--bs-dark);
+}
+
+video {
+    background-color: gray;
+}
+
+#app {
+    height: 100%;
+}
+
+@keyframes appear_animation {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.appear {
+    animation-name: appear_animation;
+    animation-duration: 1s;
+}
