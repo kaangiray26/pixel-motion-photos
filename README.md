@@ -5,4 +5,4 @@ Convert Motion Photos on the web
 * Bulk convert
 * Download all videos as a single .zip file
 
-### [Website](https://kaangiray26.github.io/pixel-motion-photos/)
+### [Website](https://pixel.buzl.uk/)
