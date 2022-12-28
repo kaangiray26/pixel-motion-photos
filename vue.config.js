@@ -1,1 +1,1 @@
-module.exports = { publicPath: '/pixel-motion-photos/' }
+module.exports = { publicPath: '/' }
