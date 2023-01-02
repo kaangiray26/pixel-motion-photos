@@ -1,15 +1,4 @@
 // extract.js
-
-var fetcher = null;
-var ffmpeg = null;
-
-async function init() {
-    const { createFFmpeg, fetchFile } = FFmpeg;
-    fetcher = fetchFile;
-    ffmpeg = createFFmpeg();
-    await ffmpeg.load();
-}
-
 function buffertoblob(data) {
     let start = 0;
     let array = new Uint8Array(data);
@@ -29,7 +18,21 @@ async function extract_video(file) {
     return { "src": URL.createObjectURL(blob), "blob": blob }
 }
 
-async function transcode_video(file) {
+async function transcode_video_mp4(file, fetcher, ffmpeg) {
+    let buffer = await file.arrayBuffer();
+    let blob = buffertoblob(buffer);
+    let data = await fetcher(blob);
+
+    ffmpeg.FS('writeFile', 'video.mp4', data);
+    await ffmpeg.run('-i', 'video.mp4', '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '19', '-c:a', 'copy', 'output.mp4');
+
+    let output = await ffmpeg.FS('readFile', 'output.mp4');
+    let b = new Blob([output.buffer], { type: "video/mp4" });
+
+    return { "src": URL.createObjectURL(b), "blob": b };
+}
+
+async function transcode_video_webm(file, fetcher, ffmpeg) {
     let buffer = await file.arrayBuffer();
     let blob = buffertoblob(buffer);
     let data = await fetcher(blob);
@@ -43,5 +46,4 @@ async function transcode_video(file) {
     return { "src": URL.createObjectURL(b), "blob": b };
 }
 
-init();
-export { extract_video, transcode_video }
+export { extract_video, transcode_video_mp4, transcode_video_webm }

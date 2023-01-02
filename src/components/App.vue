@@ -45,11 +45,14 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue';
-import { extract_video, transcode_video } from '/js/extract.js';
+import { ref, nextTick, onMounted } from 'vue';
+import { extract_video, transcode_video_webm, transcode_video_mp4 } from '/js/extract.js';
 
 const alert = ref(false);
 const loading = ref(false);
+
+const fetcher = ref(null);
+const ffmpeg = ref(null);
 
 const file_input = ref(null);
 const downloadLink = ref(null);
@@ -88,10 +91,12 @@ async function convert_mp4() {
         return;
     }
 
+    loading.value = true;
     for (let i = 0; i < file_input.value.files.length; i++) {
-        let obj = await extract_video(file_input.value.files[i]);
+        let obj = await transcode_video_mp4(file_input.value.files[i], fetcher.value, ffmpeg.value);
         videos.value.push(obj);
     }
+    loading.value = false;
 }
 
 async function convert_webm() {
@@ -103,11 +108,19 @@ async function convert_webm() {
         return;
     }
 
+    loading.value = true;
     for (let i = 0; i < file_input.value.files.length; i++) {
-        loading.value = true;
-        let obj = await transcode_video(file_input.value.files[i]);
-        loading.value = false;
+        let obj = await transcode_video_webm(file_input.value.files[i], fetcher.value, ffmpeg.value);
         videos.value.push(obj);
     }
+    loading.value = false;
 }
+
+onMounted(async function () {
+    console.log("Mounted");
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    fetcher.value = fetchFile;
+    ffmpeg.value = createFFmpeg();
+    await ffmpeg.value.load();
+})
 </script>
