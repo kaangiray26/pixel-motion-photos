@@ -1,12 +1,13 @@
 // extract.js
 
 var fetcher = null;
+var ffmpeg = null;
 
 async function init() {
     const { createFFmpeg, fetchFile } = FFmpeg;
-    const ffmpeg = createFFmpeg();
-    await ffmpeg.load();
     fetcher = fetchFile;
+    ffmpeg = createFFmpeg();
+    await ffmpeg.load();
 }
 
 function buffertoblob(data) {

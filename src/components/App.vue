@@ -21,15 +21,18 @@
             <div v-if="alert" class="alert alert-danger appear mt-2" role="alert">
                 Please select at least one file !
             </div>
+            <div v-if="loading" class="alert alert-primary appear mt-2" role="alert">
+                Loading...
+            </div>
             <div v-show="videos.length" class="card mt-2">
                 <div class="card-body">
                     <div class="d-flex flex-column mb-2">
                         <button class="btn btn-dark" @click="download">Download All</button>
                     </div>
                     <div class="container">
-                        <div class="row row-cols-4 gx-0">
+                        <div class="row row-cols-4 g-2">
                             <div class="col" v-for="video in videos">
-                                <video :src="video.src" class="img-thumbnail" autoplay="true" loop="true"
+                                <video :src="video.src" class="img-fluid" autoplay="true" loop="true"
                                     @error="fallback"></video>
                             </div>
                         </div>
@@ -46,6 +49,8 @@ import { ref, nextTick } from 'vue';
 import { extract_video, transcode_video } from '/js/extract.js';
 
 const alert = ref(false);
+const loading = ref(false);
+
 const file_input = ref(null);
 const downloadLink = ref(null);
 
@@ -53,6 +58,7 @@ const videos = ref([]);
 
 function reset() {
     alert.value = false;
+    loading.value = false;
     videos.value = [];
 }
 
@@ -98,7 +104,9 @@ async function convert_webm() {
     }
 
     for (let i = 0; i < file_input.value.files.length; i++) {
+        alert.value = true;
         let obj = await transcode_video(file_input.value.files[i]);
+        alert.value = false;
         videos.value.push(obj);
     }
 }
