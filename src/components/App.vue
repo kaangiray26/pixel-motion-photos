@@ -4,15 +4,17 @@
             <div class="card">
                 <div class="card-body">
                     <div>
-                        <h1 class="fw-bold">Convert Pixel Motion Photos to Videos</h1>
+                        <h1 class="fw-bold">Pixel Motion Photos to Videos</h1>
                     </div>
                     <div class="input-group flex-nowrap mb-2">
                         <span class="input-group-text bi bi-images" id="addon-wrapping"></span>
                         <input ref="file_input" type="file" class="form-control" aria-describedby="addon-wrapping"
                             multiple="true" accept=".jpg">
                     </div>
-                    <div class="d-flex flex-column">
-                        <button class="btn btn-dark" @click="convert">Convert</button>
+                    <div class="d-flex flex-row align-items-end">
+                        <span class="fs-5 fw-bold text-decoration-underline me-4">Convert to:</span>
+                        <button class="btn btn-dark me-2" @click="convert_mp4">MP4</button>
+                        <button class="btn btn-dark" @click="convert_webm">WebM</button>
                     </div>
                 </div>
             </div>
@@ -41,7 +43,7 @@
 
 <script setup>
 import { ref, nextTick } from 'vue';
-import { extract_video } from '/js/extract.js';
+import { extract_video, transcode_video } from '/js/extract.js';
 
 const alert = ref(false);
 const file_input = ref(null);
@@ -71,7 +73,7 @@ async function download() {
     });
 }
 
-async function convert() {
+async function convert_mp4() {
     reset();
     await nextTick();
 
@@ -82,6 +84,21 @@ async function convert() {
 
     for (let i = 0; i < file_input.value.files.length; i++) {
         let obj = await extract_video(file_input.value.files[i]);
+        videos.value.push(obj);
+    }
+}
+
+async function convert_webm() {
+    reset();
+    await nextTick();
+
+    if (file_input.value.files.length == 0) {
+        alert.value = true;
+        return;
+    }
+
+    for (let i = 0; i < file_input.value.files.length; i++) {
+        let obj = await transcode_video(file_input.value.files[i]);
         videos.value.push(obj);
     }
 }

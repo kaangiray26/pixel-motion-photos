@@ -1,4 +1,7 @@
 // extract.js
+const { createFFmpeg, fetchFile } = FFmpeg;
+const ffmpeg = createFFmpeg();
+await ffmpeg.load();
 
 function buffertoblob(data) {
     let start = 0;
@@ -19,4 +22,18 @@ async function extract_video(file) {
     return { "src": URL.createObjectURL(blob), "blob": blob }
 }
 
-export { extract_video }
+async function transcode_video(file) {
+    let buffer = await file.arrayBuffer();
+    let blob = buffertoblob(buffer);
+    let data = fetchFile(blob);
+
+    ffmpeg.FS('writeFile', 'video.mp4', data);
+    await ffmpeg.run('-i', 'video.mp4', '-c:v', 'libvpx-vp9', '-crf', '19', '-b:v', '0', 'output.webm');
+
+    let output = await ffmpeg.FS('readFile', 'output.webm');
+    let b = new Blob([output.buffer], { type: "video/webm" });
+
+    return { "src": URL.createObjectURL(b), "blob": b };
+}
+
+export { extract_video, transcode_video }
