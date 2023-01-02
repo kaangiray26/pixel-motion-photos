@@ -11,17 +11,23 @@
                         <input ref="file_input" type="file" class="form-control" aria-describedby="addon-wrapping"
                             multiple="true" accept=".jpg">
                     </div>
-                    <div class="d-flex flex-row align-items-end">
+                    <div class="d-flex flex-row align-items-end" v-if="ffmpeg_loaded">
                         <span class="fs-5 fw-bold text-decoration-underline me-4">Convert to:</span>
                         <button class="btn btn-dark me-2" @click="convert_mp4">MP4</button>
                         <button class="btn btn-dark" @click="convert_webm">WebM</button>
                     </div>
                 </div>
             </div>
-            <div v-if="alert" class="alert alert-danger appear mt-2" role="alert">
+            <div v-if="!ffmpeg_loaded" class="alert alert-warning appear my-2" role="alert">
+                ffmpeg.wasm loading...
+            </div>
+            <div v-if="ffmpeg_error" class="alert alert-danger appear my-2" role="alert">
+                ffmpeg.wasm couldn't be loaded!
+            </div>
+            <div v-if="alert" class="alert alert-danger appear my-2" role="alert">
                 Please select at least one file !
             </div>
-            <div v-if="loading" class="alert alert-primary appear mt-2" role="alert">
+            <div v-if="loading" class="alert alert-primary appear my-2" role="alert">
                 Loading...
             </div>
             <div v-show="videos.length" class="card mt-2">
@@ -50,6 +56,8 @@ import { extract_video, transcode_video_webm, transcode_video_mp4 } from '/js/ex
 
 const alert = ref(false);
 const loading = ref(false);
+const ffmpeg_loaded = ref(false);
+const ffmpeg_error = ref(false);
 
 const fetcher = ref(null);
 const ffmpeg = ref(null);
@@ -117,10 +125,13 @@ async function convert_webm() {
 }
 
 onMounted(async function () {
-    console.log("Mounted");
     const { createFFmpeg, fetchFile } = FFmpeg;
     fetcher.value = fetchFile;
     ffmpeg.value = createFFmpeg();
-    await ffmpeg.value.load();
+    ffmpeg.value.load().then((response) => {
+        ffmpeg_loaded.value = true;
+    }).catch((error) => {
+        ffmpeg_error.value = true;
+    })
 })
 </script>
