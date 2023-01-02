@@ -1,9 +1,12 @@
 // extract.js
 
+var fetcher = null;
+
 async function init() {
     const { createFFmpeg, fetchFile } = FFmpeg;
     const ffmpeg = createFFmpeg();
     await ffmpeg.load();
+    fetcher = fetchFile;
 }
 
 function buffertoblob(data) {
@@ -28,7 +31,7 @@ async function extract_video(file) {
 async function transcode_video(file) {
     let buffer = await file.arrayBuffer();
     let blob = buffertoblob(buffer);
-    let data = fetchFile(blob);
+    let data = await fetcher(blob);
 
     ffmpeg.FS('writeFile', 'video.mp4', data);
     await ffmpeg.run('-i', 'video.mp4', '-c:v', 'libvpx-vp9', '-crf', '19', '-b:v', '0', 'output.webm');
