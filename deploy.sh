@@ -8,4 +8,4 @@ git init
 git add .
 git commit -m "deploy"
 git remote add origin git@github.com:kaangiray26/pixel-motion-photos.git
-git push --force origin master:gh-pages
+git push --force origin main:gh-pages
