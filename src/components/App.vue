@@ -12,9 +12,7 @@
                             multiple="true" accept=".jpg">
                     </div>
                     <div class="d-flex flex-row align-items-end" v-if="ffmpeg_loaded">
-                        <span class="fs-5 fw-bold text-decoration-underline me-4">Convert to:</span>
-                        <button class="btn btn-dark me-2" @click="convert_mp4">MP4</button>
-                        <button class="btn btn-dark" @click="convert_webm">WebM</button>
+                        <button class="btn btn-dark me-2" @click="convert_mp4">Covert to MP4</button>
                     </div>
                 </div>
             </div>
@@ -52,7 +50,7 @@
 
 <script setup>
 import { ref, nextTick, onMounted } from 'vue';
-import { extract_video, transcode_video_webm, transcode_video_mp4 } from '/js/extract.js';
+import { transcode_video_mp4 } from '/js/extract.js';
 
 const alert = ref(false);
 const loading = ref(false);
@@ -102,23 +100,6 @@ async function convert_mp4() {
     loading.value = true;
     for (let i = 0; i < file_input.value.files.length; i++) {
         let obj = await transcode_video_mp4(file_input.value.files[i], fetcher.value, ffmpeg.value);
-        videos.value.push(obj);
-    }
-    loading.value = false;
-}
-
-async function convert_webm() {
-    reset();
-    await nextTick();
-
-    if (file_input.value.files.length == 0) {
-        alert.value = true;
-        return;
-    }
-
-    loading.value = true;
-    for (let i = 0; i < file_input.value.files.length; i++) {
-        let obj = await transcode_video_webm(file_input.value.files[i], fetcher.value, ffmpeg.value);
         videos.value.push(obj);
     }
     loading.value = false;
