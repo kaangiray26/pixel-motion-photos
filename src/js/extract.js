@@ -1,7 +1,10 @@
 // extract.js
-const { createFFmpeg, fetchFile } = FFmpeg;
-const ffmpeg = createFFmpeg();
-await ffmpeg.load();
+
+async function init() {
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    const ffmpeg = createFFmpeg();
+    await ffmpeg.load();
+}
 
 function buffertoblob(data) {
     let start = 0;
@@ -36,4 +39,5 @@ async function transcode_video(file) {
     return { "src": URL.createObjectURL(b), "blob": b };
 }
 
+init();
 export { extract_video, transcode_video }
