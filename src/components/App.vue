@@ -104,9 +104,9 @@ async function convert_webm() {
     }
 
     for (let i = 0; i < file_input.value.files.length; i++) {
-        alert.value = true;
+        loading.value = true;
         let obj = await transcode_video(file_input.value.files[i]);
-        alert.value = false;
+        loading.value = false;
         videos.value.push(obj);
     }
 }
