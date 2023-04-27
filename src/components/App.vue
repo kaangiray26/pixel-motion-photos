@@ -12,7 +12,7 @@
                             multiple="true" accept=".jpg">
                     </div>
                     <div class="d-flex flex-row align-items-end" v-if="ffmpeg_loaded">
-                        <button class="btn btn-dark me-2" @click="convert_mp4">Covert to MP4</button>
+                        <button class="btn btn-dark me-2" @click="convert_mp4">Convert to MP4</button>
                     </div>
                 </div>
             </div>
